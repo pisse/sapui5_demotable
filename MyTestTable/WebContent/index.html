@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<META content="text/html; charset=utf-8" http-equiv="Content-Type">
+		<title>Демо-пример работы SAP UI5-приложения</title>
+		<script type="text/javascript">
+    		if (!window.console){
+    			  console = {
+    					    log: function(){},
+    					    debug: function(){},
+    					    info: function(){},
+    					    warn: function(){},
+    					    error: function(){}
+    					  };
+    		}
+		</script>
+		<script src="resources/sap-ui-core.js" type="text/javascript"
+			id="sap-ui-bootstrap"
+			data-sap-ui-libs="sap.ui.ux3, sap.ui.commons, sap.ui.table"
+			data-sap-ui-theme="sap_platinum" >
+		</script>
+		<!-- add sap.ui.table,sap.ui.ux3 and/or other libraries to 'data-sap-ui-libs' if required -->
+		<script type="text/javascript" src="dao.js"></script>
+		<script type="text/javascript" src="app.js"></script>
+	</head>
+	
+	<body class="sapUiBody">
+		<div id="content"></div>
+	</body>
+</html>
