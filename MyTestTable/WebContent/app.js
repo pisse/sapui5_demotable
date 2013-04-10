@@ -26,46 +26,55 @@ oShell.placeAt("content");
 
 
 // common functions
-function navigate(viewName, targetView, targetPlug, oEvent, oModel, oParams){
+/**
+ * @param sViewId - ID экрана
+ * @param sViewName - имя экрана
+ * @param sTargetPlug - название метода контроллера вызываемого экрана, который играет роль входного плага (идея аналогична WD-плагам)
+ * @param oEvent - объект события
+ * @param oModel - объект модели для установки этой модели в вызываемом экране
+ * @param oParams - дополнительные параметры (необязательно)
+ */
+function navigate(sViewId, sViewName, sTargetPlug, oEvent, oModel, oParams){
 	//TODO: name of shell should be passed by parameter or set by constant
+	console.log("Firing plug '" + sTragetPlug + "' for view (ID = '" + sViewId+"')");
 	var oShell = sap.ui.getCore().byId("MainShell");
-	var oView = sap.ui.getCore().byId(viewName);
+	var oView = sap.ui.getCore().byId(sViewId);
 	var oCtrl = null;
-    //console.log("Navigate to: viewName = "+viewName+"; targetView = "+targetView+"; targetPlug = "+targetPlug);
     // instantiate the content view if it doesn't exist yet
 	if (!oView) {
-		//console.log("View not found. Initialize it.");
 	    oView = sap.ui.view({
 			type : sap.ui.core.mvc.ViewType.JS,
-			id : viewName,
-			viewName : targetView
+			id : sViewId,
+			viewName : sViewName
 	    });
-	    
+
+	}
+
+	if(oView != null){
 	    if(oModel){
 	    	// bind it to the same model
 		    oView.setModel(oModel);	    	
 	    }
-	}
-
-	if(oView != null){
 		oCtrl = oView.getController();
-	}else{
-		//console.error("View is NULL!");
-	}
-	if(oCtrl != null){
-		// Navigate to the content view
-		if(oParams){
-			oCtrl[targetPlug](oEvent, oParams);
+		if(oCtrl != null){
+			// Navigate to the content view
+			if(oParams){
+				oCtrl[sTargetPlug](oEvent, oParams);
+			}else{
+				oCtrl[sTargetPlug](oEvent);
+			}
+			// show the view
+			oShell.destroyContent();
+			oShell.addContent(oView, true);
+			return oCtrl;
 		}else{
-			oCtrl[targetPlug](oEvent);
+			console.error("Unable to get controller of view (ID='" + sViewId + "')!");
+			return null;
 		}
-	}	
-
-	// show the view
-	oShell.destroyContent();
-	oShell.addContent(oView, true);				
-	
-	return oCtrl;
+	}else{
+		console.error("Unable to find/init view (ID='" + sViewId + "')!");
+		return null;
+	}
 }
 
 

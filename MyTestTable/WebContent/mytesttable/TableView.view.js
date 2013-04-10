@@ -157,8 +157,8 @@ sap.ui.jsview("mytesttable.TableView", {
     			  		"как создание, изменение и удаление записей в табличных данных.\n" +
     			  		"Для некоторых контрольных элементов, как, например, для \"Текущей темы оформления\" предусмотрены всплывающие подсказки.\n" +
     			  		"При необходимости для увеличения размеров шрифтов можно изменить масштаб представления страницы.\n" +
-    			  		"Пример не использует в своей работе какую-либо базу данных, поэтому никакие реальные данные в ходе его работы повреждены не будут." +
-    			  		"Для корректной работы данного примера необходим браузер IE версии не ниже 9.0 или Firefox версии не ниже 10"}),
+    			  		"Пример не использует в своей работе какую-либо базу данных, поэтому никакие реальные данные в ходе его работы повреждены не будут.\n" +
+    			  		"Для корректной работы данного примера необходим браузер IE версии не ниже 9.0 или Firefox версии не ниже 10."}),
     			  new sap.ui.commons.layout.MatrixLayoutCell({
     		  hAlign : sap.ui.commons.layout.HAlign.Right, // sap.ui.commons.layout.HAlign
     		  vAlign: sap.ui.commons.layout.VAlign.Top,
@@ -188,40 +188,7 @@ sap.ui.jsview("mytesttable.TableView", {
     	  var oNotifBar = new sap.ui.ux3.NotificationBar("NotifBar", {
     		  visibleStatus : sap.ui.ux3.NotificationBarStatus.None, // sap.ui.ux3.NotificationBarStatus
     		  resizeEnabled : false, // boolean
-    		  //tooltip : "This is a Tooltip", // sap.ui.core.TooltipBase
-    		  display: [ dispNew, this ]
-//    		  display : function(oEvent) {
-//    			  console.error("in display");
-//    			  //var control = oEvent.getSource();
-//    			  //console.error("Display: "+control.getId());
-//    			  var bShow = oEvent.getParameter("show");
-//    			  console.error(bShow);
-//    		  }
-//			resize : [ function(oEvent) {
-//				var control = oEvent.getSource();
-//			}, this ]
     	  });
-    	  //oNotifBar.attachDisplay(dispNew21);
-    	  //oNBar.addStyleClass("sapUiNotificationBarDemokit");
     	  this.addContent(oNotifBar);
       }      
 });
-
-
-function dispNew(oEvent){
-	//console.error("I'm a dispNew!");
-	var bShow = oEvent.getParameter("show");
-	if (bShow) {
-		/*
-		 * Now the application can decide how to display the bar. It can be maximized, default, minimized (please see NotificationBarStatus) 
-		 */
-		var sStatus = sap.ui.ux3.NotificationBarStatus.Default;
-		oNotiBar2.setVisibleStatus(sStatus);
-	} else {
-		var sStatus = sap.ui.ux3.NotificationBarStatus.None;
-		oNotiBar2.setVisibleStatus(sStatus);
-	}
-}
-
-
-

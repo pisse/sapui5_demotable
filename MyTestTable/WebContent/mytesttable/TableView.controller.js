@@ -45,7 +45,6 @@ sap.ui.controller("mytesttable.TableView", {
 	   // то тогда this будет содержать в себе объект кнопки, а не контроллер!
 	   // А если сделать так, как сейчас, то в this будет этот контроллер, что нам и надо.
 	   
-	   //this.clearMsgBar();
 	   var oCore = sap.ui.getCore();
 	   var oTable = oCore.getElementById("DictsTable");
 	   var idx = oTable.getSelectedIndex();
@@ -55,44 +54,14 @@ sap.ui.controller("mytesttable.TableView", {
 		   var oParams = {"id": iId};
 		   navigate("vwDictDetails", "mytesttable.TableElemView", "inBound", oEvent, oModel, oParams);
 	   }else{
-		   var msgs = new Array();
 		   var now = (new Date()).toUTCString();
 		   var oMsg = new sap.ui.core.Message({
-			   type : sap.ui.core.MessageType.Error, // sap.ui.commons.MessageType
+			   level : sap.ui.core.MessageType.Error, // sap.ui.commons.MessageType
 			   text : "Необходимо выбрать элемент для изменения!",
 			   timestamp : now
 		   });
-		   msgs.push(oMsg);
-		   
-//		   var oNotifier = new sap.ui.ux3.Notifier({
-//				title : "The My first Notifier"
-//			});
-//			oNotifier.addMessage(oMsg);
-
-		   
-//		   var oNBar = oCore.getElementById("NotifBar");
-//		   oNBar.setMessageNotifier(oNotifier);
-//		   oNBar.attachDisplay(
-//				   function(oEvent){
-//					   var bShow = oEvent.getParameter("show");
-//					   var sStatus = sap.ui.ux3.NotificationBarStatus.None;
-//					   if (bShow) {
-//						   sStatus = sap.ui.ux3.NotificationBarStatus.Default;
-//					   }
-//					   this.setVisibleStatus(sStatus);
-//				   }
-//		   );
-//		   oNBar.setVisibleStatus(sap.ui.ux3.NotificationBarStatus.Default);
-//		   var oMBar = oCore.getElementById("MessageBar");
-//		   oMBar.addMessages(msgs);
+		   this.showMessage("", oMsg, true);
 	   }
-   },
-   
-   
-   disp2: function(oEvent){
-	   //console.error("Hi! I'm a displayListener.");
-	   //var bShow = oEvent.getParameter("show");
-	   //console.error(" >> bShow = "+bShow);
    },
    
    
@@ -102,60 +71,75 @@ sap.ui.controller("mytesttable.TableView", {
 	   navigate("vwDictDetails", "mytesttable.TableElemView", "inBound", oEvent, oModel);
    },
    
-   
-   
+      
    onAskToDelete: function(oEvent){
-	   //console.error("Enter to onAskToDelete");
-	   this.printMe();
-	   var oCtrl = this;
-	   sap.ui.commons.MessageBox.confirm("Удалить выделенный элемент?", function(bResult) { oCtrl.onDelete(bResult); }, "Запрос подтверждения");
+	   var oCore = sap.ui.getCore();
+	   var oTable = oCore.getElementById("DictsTable");
+	   var idx = oTable.getSelectedIndex();
+	   if(idx == -1){
+		   var now = (new Date()).toUTCString();
+		   var oMsg = new sap.ui.core.Message({
+			   level : sap.ui.core.MessageType.Error, // sap.ui.commons.MessageType
+			   text : "Необходимо выбрать элемент для удаления!",
+			   timestamp : now
+		   });
+		   this.showMessage("", oMsg, true);
+	   }else{
+		   var oCtrl = this;
+		   sap.ui.commons.MessageBox.confirm("Удалить выделенный элемент?", function(bResult) { oCtrl.onDelete(bResult); }, "Запрос подтверждения");
+	   }
    },
    
    
    onDelete: function(bResult){
- 	  //console.log("enter in onDelete");
-	  //console.log("Result returned to fnCallbackConfirm: " + bResult);
 	  if(bResult){
-		  this.clearMsgBar();
-		  this.printMe();
 		  var oCore = sap.ui.getCore();
 		  var oTable = oCore.getElementById("DictsTable");
 		  var idx = oTable.getSelectedIndex();
-		  //console.error("Selected index = "+idx);
 		  if(idx != -1){
 			  var iId = this.getIdOfSelectedRec(idx);
 			  new DAO().deleteRec(iId);
-			  this.refreshData();
-		  }else{
-			  var msgs = new Array();
-			  var oMsg = new sap.ui.commons.Message({
-				  //id : "MsgId", // sap.ui.core.ID
-				  type : sap.ui.commons.MessageType.Error, // sap.ui.commons.MessageType
-				  text : "Необходимо выбрать элемент для удаления!"
+			  var now = (new Date()).toUTCString();
+			  var oMsg = new sap.ui.core.Message({
+				  level : sap.ui.core.MessageType.Success, // sap.ui.commons.MessageType
+				  text : "Элемент удален.",
+				  timestamp : now
 			  });
-			  msgs.push(oMsg);
-//			  var oMBar = sap.ui.getCore().getElementById("MessageBar");
-//			  oMBar.addMessages(msgs);
+			  this.showMessage("", oMsg, true);
+			  this.refreshData();
 		  }
 	  }
-	  //console.log("leave onDelete");
    },
    
    
-   
-   clearMsgBar: function(){
-//	   var oMBar = sap.ui.getCore().getElementById("MessageBar");
-//	   oMBar.deleteAllMessages();
+   showMessage: function(oTitle, oMessage, bClearBarBefore){
+	   var oCore = sap.ui.getCore();
+	   var oNBar = oCore.getElementById("NotifBar");
+	   if(bClearBarBefore){
+		   oNBar.destroyNotifiers();
+	   }
+	   var oNotifier = new sap.ui.ux3.Notifier({
+		   	title : oTitle
+			, messageSelected: [
+			                    function(oEvent){
+			                    	oNBar.setVisibleStatus( sap.ui.ux3.NotificationBarStatus.None );
+			                    }
+			                    , this]
+	   });
+	   oNotifier.addMessage(oMessage);
+	   
+	   oNBar.addNotifier(oNotifier);
+	   oNBar.setVisibleStatus(sap.ui.ux3.NotificationBarStatus.Default);
    },
+  
    
    
-   printMe: function(){
-	   //console.error("Hi! this is "+this);
-   },
-   
-   
-   inBound: function(oEvent){
+   inBound: function(oEvent, oParams){
 	   // здесь обновление данных не нужно, поскольку оно происходит в методе onInit(), который вызывается перед вызовом этого метода
+	   if(oParams){
+		   var oMsg = oParams.message;
+		   this.showMessage("", oMsg, true);
+	   }
    },
    
    
@@ -170,7 +154,7 @@ sap.ui.controller("mytesttable.TableView", {
    
    
    refreshData: function(){
-	   //console.log("Begin refresh data...");
+	   console.log("Begin refresh data...");
 	   var oCore = sap.ui.getCore();
 	   var aData = this.readData(null);
 	   var oModel = this.getMyModel();

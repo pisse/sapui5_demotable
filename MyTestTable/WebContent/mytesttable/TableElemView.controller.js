@@ -49,6 +49,7 @@ sap.ui.controller("mytesttable.TableElemView", {
 		oModel.setProperty("/dictData", oDictData);
 	},
 	
+	
 	onBackBtnPressed: function(oEvent){
 		navigate("vwDictList", "mytesttable.TableView", "inBound", null, null);
 	},
@@ -61,7 +62,14 @@ sap.ui.controller("mytesttable.TableElemView", {
 		var oDict = oModel.getProperty("/dictData");
 		
 		this.saveData(oDict);
-		navigate("vwDictList", "mytesttable.TableView", "inBound", null, null);
+		var now = (new Date()).toUTCString();
+		var oMsg = new sap.ui.core.Message({
+			level : sap.ui.core.MessageType.Success, // sap.ui.commons.MessageType
+			text : "Изменения сохранены.",
+			timestamp : now
+		});
+		var oParams = {"message": oMsg};
+		navigate("vwDictList", "mytesttable.TableView", "inBound", null, null, oParams);
 	},
 	
 	
