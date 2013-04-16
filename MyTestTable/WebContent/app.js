@@ -27,7 +27,7 @@ oShell.placeAt("content");
 
 // common functions
 function navigate(viewName, targetView, targetPlug, oEvent, oModel, oParams){
-	//TODO: name of shell should be passed by parameter or set by constant
+	//TODO: name of shell should be passed by parameter or set by   
 	var oShell = sap.ui.getCore().byId("MainShell");
 	var oView = sap.ui.getCore().byId(viewName);
 	var oCtrl = null;
